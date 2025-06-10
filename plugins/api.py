@@ -54,18 +54,31 @@ def on_queue_update(update):
 def flux_pro_async(body):
     parameter = body.get("parameter", {})
     media_info_list = body.get("media_info_list", [])
-    result = fal_client.subscribe(
-        "fal-ai/flux-pro/kontext",
-        arguments={
-            "prompt": parameter.get('prompt', ''),
-            "guidance_scale": parameter.get('guidance_scale', '3.5'),
-            "num_images": parameter.get('batch_size', 1),
-            "aspect_ratio": parameter.get('aspect_ratio', '1:1'),
-            "image_url": media_info_list[0]['media_data'] if media_info_list else None,
-        },
-        with_logs=True,
-        on_queue_update=on_queue_update,
-    )
+    if len(media_info_list) == 0:
+        result = fal_client.subscribe(
+            "fal-ai/flux-pro/kontext/text-to-image",
+            arguments={
+                "prompt": parameter.get('prompt', ''),
+                "guidance_scale": parameter.get('guidance_scale', '3.5'),
+                "num_images": parameter.get('batch_size', 1),
+                "aspect_ratio": parameter.get('aspect_ratio', '1:1'),
+            },
+            with_logs=True,
+            on_queue_update=on_queue_update,
+        )
+    else:
+        result = fal_client.subscribe(
+            "fal-ai/flux-pro/kontext",
+            arguments={
+                "prompt": parameter.get('prompt', ''),
+                "guidance_scale": parameter.get('guidance_scale', '3.5'),
+                "num_images": parameter.get('batch_size', 1),
+                "aspect_ratio": parameter.get('aspect_ratio', '1:1'),
+                "image_url": media_info_list[0]['media_data'] if media_info_list else None,
+            },
+            with_logs=True,
+            on_queue_update=on_queue_update,
+        )
     print(result)
     return result
 
@@ -140,12 +153,6 @@ if __name__ == '__main__':
         "model": "flux-pro/kontext"
      },
     "media_info_list": [
-         {
-            "media_data": "https://v3.fal.media/files/rabbit/rmgBxhwGYb2d3pl3x9sKf_output.png",
-            "media_profiles": {
-                "media_data_type": "url"
-            }
-        }
     ]
 }'''
     Init(None)
