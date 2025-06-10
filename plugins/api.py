@@ -66,6 +66,22 @@ def flux_pro_async(body):
             with_logs=True,
             on_queue_update=on_queue_update,
         )
+    elif len(media_info_list) > 1:
+        image_urls = []
+        for media_info in media_info_list:
+            image_urls.append(media_info['media_data'])
+        result = fal_client.subscribe(
+            "fal-ai/flux-pro/kontext/max/multi",
+            arguments={
+                "prompt": parameter.get('prompt', ''),
+                "guidance_scale": parameter.get('guidance_scale', '3.5'),
+                "num_images": parameter.get('batch_size', 1),
+                "aspect_ratio": parameter.get('aspect_ratio', '1:1'),
+                "image_urls": image_urls,
+            },
+            with_logs=True,
+            on_queue_update=on_queue_update,
+        )
     else:
         result = fal_client.subscribe(
             "fal-ai/flux-pro/kontext",
