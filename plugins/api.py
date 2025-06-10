@@ -29,7 +29,12 @@ def Process(body, extra):
         result = flux_pro_async(body_json)
     media_info_list = []
     for result_data in result["images"]:
-        media_info_list.append(transformImage(result_data["url"]))
+        media_info_list.append({
+            "media_data": transformImage(result_data["url"]),  # 返回base64 异步时会自动转成URL
+            "media_profiles": {
+                "media_data_type": "url"
+            }
+        })
     resp = [json.dumps({
         "parameter": {
             "version": "1.0.0",
