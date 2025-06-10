@@ -1,0 +1,47 @@
+{
+    "amqp_url": "amqp://guest:guest@192.168.10.1:5672/",
+    "http_addr": "0.0.0.0:8081",
+    "http_async_addr": "0.0.0.0:8082",
+    "http_time_out": 60,
+    "http_handle_path": "/v1/aggregation/generation",
+    "http_query_path" : "/v1/query",
+    "share_memory_mode": "shm_c",
+    "async_storage" : "redis",
+    "process_start_mode" : 0,
+    "alarm": "",
+    "debug" : true,
+    "producer": [
+      "http_async",
+      "backend"
+    ],
+    "upload" : {
+      "url" : "",
+      "max_retry" : 3,
+      "retry_ttl" : 3
+    },
+    "worker": {
+      "default": {
+        "queue_name": "aggregation_generation",
+        "buffer_size": 2,
+        "worker_num": 1,
+        "algorithm_name": "aggregation",
+        "plugin_name": "richpython3",
+        "max_waiting_time": 0,
+        "queue_pop_seq" : "left"
+      },
+      "output": {
+        "queue_name": "output",
+        "buffer_size": 2,
+        "worker_num": 2,
+        "algorithm_name": "output",
+        "plugin_name": "output/richpython3",
+        "max_waiting_time": 1,
+        "queue_pop_seq" : ""
+      }
+    },
+    "Redis": {
+      "addr": "10.0.0.6:6379",
+      "password": "",
+      "db": 0
+    }
+  }
